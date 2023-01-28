@@ -3,7 +3,7 @@ import express, { Request, Response} from 'express';
 import { users, products, purchases } from './database'
 import cors from 'cors';
 import { TProduct, CATEGORY, TUser, TPurchase } from "./types"
-// import { createUser, getAllUsers, createProduct, getAllProducts, getProductById, createPurchase, getAllPurchasesFromUserId } from "./database"
+import { createUser, getAllUsers, createProduct, getAllProducts, getProductById, createPurchase, getAllPurchasesFromUserId } from "./database"
 
 console.log(users);
 console.log(products);
@@ -81,4 +81,97 @@ app.post('/purchases', (req: Request, res: Response) =>{
     purchases.push(newPurchase)
 
     res.status(201).send("Compra realizada com sucesso")
+})
+
+app.get('/products/search', (req: Request, res: Response) => {
+    const q = req.query.q as string
+    const result: TProduct[] = products.filter((product) => {
+        return product.name.toLowerCase().includes(q.toLowerCase())
+    })
+    res.status(200).send(result)
+})
+
+app.get('/products/:id', (req: Request, res: Response) => {
+    const id = req.params.id as string
+    const result = products.find((product) => {
+        return product.id === id
+    })
+    res.status(200).send(result)
+    console.log("objeto product encontrado")
+})
+
+app.get('/users/:id/purchases', (req: Request, res: Response) => {
+    const id = req.params.id as string
+
+    const result = purchases.filter((purchase) => {
+        return purchase.userId === id
+    })
+    res.status(200).send(result)
+    console.log("array de compras do user procurado")
+})
+
+//Delete User by Id
+
+app.delete('/users/:id', (req: Request, res: Response) => {
+    const id = req.params.id as string
+
+    const userIndex = users.findIndex((user) => {
+        return user.id === id
+    })
+
+    if (userIndex >= 0) {
+        users.splice(userIndex, 1)
+    }
+    res.status(200).send("Usuário deletado com sucesso")
+})
+
+app.delete('/products/:id', (req: Request, res: Response) => {
+    const id = req.params.id as string
+
+    const productIndex = products.findIndex((product) => {
+        return product.id === id
+    })
+
+    if (productIndex >= 0) {
+        products.splice(productIndex, 1)
+    }
+    res.status(200).send("Produto apagado com sucesso")
+})
+
+app.put('/users/:id', (req: Request, res: Response) => {
+    const { id } = req.params
+
+    const newId = req.body.id as string | undefined
+    const newEmail = req.body.email as string | undefined
+    const newPassword = req.body.password as string | undefined
+
+    const user = users.find((user) => user.id === id)
+
+    if(user) {
+        user.id = newId || user.id
+        user.email = newEmail || user.email
+        user.password = newPassword || user.password
+    }
+
+    res.status(200).send("Atualização realizada com sucesso")
+})
+
+app.put('/products/:id', (req: Request, res: Response) => {
+    const id = req.params.id as string
+
+    const newId = req.body.id as string | undefined
+    const newName = req.body.name as string | undefined
+    const newPrice = req.body.price as number
+    const newCategory = req.body.category as CATEGORY | undefined
+
+    const product = products.find((product) => product.id === id)
+
+    if(product) {
+        product.id = newId || product.id
+        product.name = newName || product.name
+        product.price = isNaN(newPrice) ? product.price : newPrice
+        product.category = newCategory || product.category
+    }
+
+    res.status(200).send("Atualização realizada com sucesso")
 })
