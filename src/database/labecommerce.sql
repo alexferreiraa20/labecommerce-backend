@@ -34,3 +34,42 @@ VALUES
 PRAGMA table_info('products');
 
 SELECT * FROM products;
+
+
+--
+SELECT * FROM products
+WHERE name like '%Heartstopper';
+
+INSERT INTO users (id, email, password)
+VALUES
+('u004', 'user04@email.com', '12344321');
+
+INSERT INTO products (id, name, price, category)
+VALUES 
+('p006', 'Garrafa', 40.50, 'utensilios');
+
+SELECT * FROM products
+WHERE name like '%Heartstopper';
+
+SELECT * FROM products
+WHERE id like '%p001';
+
+DELETE FROM products
+WHERE id = 'p003';
+
+UPDATE users
+SET 
+id = 'u007',
+email = 'novousuarioeditado',
+password = 'pokemon123'
+WHERE id = 'u002';
+
+SELECT * FROM users;
+
+UPDATE products
+SET 
+id = 'p009',
+name = 'Husky',
+price = 1500.80,
+category = 'dog'
+WHERE id = 'p003';
