@@ -73,3 +73,27 @@ name = 'Husky',
 price = 1500.80,
 category = 'dog'
 WHERE id = 'p003';
+
+CREATE TABLE purchases
+(
+    id TEXT PRIMARY KEY UNIQUE NOT NULL,
+    total_price REAL NOT NULL,
+    paid INTEGER NOT NULL, 
+    delivered_at TEXT, 
+    buyer_id TEXT NOT NULL,
+    FOREIGN KEY (buyer_id) REFERENCES users(id) 
+);
+
+SELECT * FROM purchases;
+
+INSERT INTO purchases (id,  total_price, paid, delivered_at, buyer_id)
+VALUES 
+    ('pu001', 100.50, 0, null, 'u001'),
+    ('pu002', 300.50, 0, null, 'u001'),
+    ('pu003', 400.90, 0, null, 'u002'),
+    ('pu004', 550.80, 0, null, 'u002');
+
+SELECT * FROM purchases
+INNER JOIN users
+ON purchases.buyer_id = users.id
+WHERE users.id = 'u001';
